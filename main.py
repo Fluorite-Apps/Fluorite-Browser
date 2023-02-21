@@ -5,6 +5,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QTabWidget, QVBoxLayout
 
+global counter_for_tabs
+counter_for_tabs = 1
 
 class Browser(QWidget):
     def __init__(self):
