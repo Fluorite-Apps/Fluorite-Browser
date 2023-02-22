@@ -12,29 +12,39 @@ class Browser(QWidget):
     def __init__(self):
         super().__init__()
 
-        # URL bar
-        self.url_bar = QLineEdit()
-        self.url_bar.returnPressed.connect(self.navigate)
-        self.url_bar.setMinimumHeight(25)
-
         # Webview
         self.web_view = QWebEngineView()
         self.web_view.load(QUrl('https://www.duckduckgo.com/'))
         self.web_view.urlChanged.connect(self.update_url_bar)
         self.web_view.titleChanged.connect(self.update_tab_name)
 
+        # Back button
+        self.back_button = QPushButton("<")
+        self.back_button.clicked.connect(self.back)
+        self.back_button.setMinimumHeight(25)
+
+        # URL bar
+        self.url_bar = QLineEdit()
+        self.url_bar.returnPressed.connect(self.navigate)
+        self.url_bar.setMinimumHeight(25)
+
         # Layout
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.back_button)
+        hbox.addWidget(self.url_bar)
+        hbox.addStretch()
         layout = QVBoxLayout()
-        layout.addWidget(self.url_bar)
+        layout.addLayout(hbox)
         layout.addWidget(self.web_view)
         self.setLayout(layout)
 
 
+    def back(self):
+        self.web_view.back()
+
     def navigate(self):
         url = self.url_bar.text()
         self.web_view.load(QUrl(url))
-        print(url)
-
 
     def update_url_bar(self, q):
         self.url_bar.setText(q.toString())
