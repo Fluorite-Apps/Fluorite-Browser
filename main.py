@@ -27,6 +27,7 @@ class Browser(QWidget):
         self.url_bar = QLineEdit()
         self.url_bar.returnPressed.connect(self.navigate)
         self.url_bar.setMinimumHeight(25)
+        self.url_bar.setMinimumWidth(1800)  # Set the minimum width
 
         # Layout
         hbox = QHBoxLayout()
