@@ -4,6 +4,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsDropShadowEffect
+from PyQt5.QtCore import Qt, QPoint, QRect
 
 global counter_for_tabs
 counter_for_tabs = 1
@@ -20,17 +22,24 @@ class Browser(QWidget):
         self.web_view.load(QUrl('https://www.duckduckgo.com/'))
         self.web_view.urlChanged.connect(self.update_url_bar)
         self.web_view.titleChanged.connect(self.update_tab_name)
+        # Set the background color to RGB(33, 37, 45)
+        self.web_view.setStyleSheet("background-color: rgb(33, 37, 45);")
 
         # Back button
         self.back_button = QPushButton("<")
         self.back_button.clicked.connect(self.back)
         self.back_button.setMinimumHeight(25)
+        self.back_button.setStyleSheet("""color: gray;
+background-color: rgb(33, 37, 45);
+font: 700 10pt "Montserrat";
+""")
 
         # URL bar
         self.url_bar = QLineEdit()
         self.url_bar.returnPressed.connect(self.navigate)
         self.url_bar.setMinimumHeight(25)
         self.url_bar.setMinimumWidth(1800)  # Set the minimum width
+        self.url_bar.setStyleSheet("""border: 1px solid rgb(33, 37, 45);""")
 
         # Apply dark mode to every loaded page
         dark_mode_script = """
@@ -81,7 +90,9 @@ class TabbedBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle('PyQt5 Browser')
+        # Set background color of main window
+        self.setStyleSheet("""background-color: #3C4052;
+                        color: gray;""")
         self.setGeometry(0, 0, 800, 600)
 
         # Tab widget
@@ -91,6 +102,11 @@ class TabbedBrowser(QMainWindow):
 
         # Set fixed tab size
         self.tab_widget.setStyleSheet("QTabBar::tab { height: 25px; width: 150px; }")
+
+        # Set the background color and shadow
+        palette = self.tab_widget.palette()
+        palette.setColor(self.tab_widget.backgroundRole(), QColor(60, 64, 82))  # RGB values for #3C4052
+        self.tab_widget.setPalette(palette)
 
         self.setCentralWidget(self.tab_widget)
 
@@ -102,6 +118,10 @@ class TabbedBrowser(QMainWindow):
         self.plus_button = QPushButton("+")
         self.plus_button.clicked.connect(self.add_tab)
         self.tab_widget.setCornerWidget(self.plus_button)
+        self.plus_button.setStyleSheet("""color: gray;
+background-color: rgb(33, 37, 45);
+font: 700 12pt "Montserrat";
+""")
 
         # Create "Settings" and "History" buttons in menu bar
         settings_button = QAction("Settings", self)
