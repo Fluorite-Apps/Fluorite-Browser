@@ -4,7 +4,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
-# from PyQt5.QtWebEngineSettings import *
 
 global counter_for_tabs
 counter_for_tabs = 1
@@ -160,6 +159,10 @@ class TabbedBrowser(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    my_pixmap = QPixmap("browsericon.ico")
+    my_icon = QIcon(my_pixmap)
+    app.setWindowIcon(my_icon)
     browser = TabbedBrowser()
     browser.showMaximized()
+    browser.setWindowTitle("Fluorite Browser")
     sys.exit(app.exec_())
