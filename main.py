@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
+# from PyQt5.QtWebEngineSettings import *
 
 global counter_for_tabs
 counter_for_tabs = 1
@@ -17,7 +18,6 @@ class Browser(QWidget):
         self.profile.setPersistentCookiesPolicy(QWebEngineProfile.NoPersistentCookies)
         self.web_view = QWebEngineView()
         self.web_view.setPage(QWebEnginePage(self.profile, self.web_view))
-        self.load_extension(os.path.abspath("extensions/Dark Reader/4.9.62_0"))
         self.web_view.load(QUrl('https://www.duckduckgo.com/'))
         self.web_view.urlChanged.connect(self.update_url_bar)
         self.web_view.titleChanged.connect(self.update_tab_name)
@@ -33,6 +33,20 @@ class Browser(QWidget):
         self.url_bar.setMinimumHeight(25)
         self.url_bar.setMinimumWidth(1800)  # Set the minimum width
 
+        # Apply dark mode to every loaded page
+        dark_mode_script = """
+            var style = document.createElement('style');
+            style.textContent = 'html { filter: invert(1) hue-rotate(180deg); background-color: #1a1a1a; } img:not([src*=".svg"]), video { filter: invert(1) hue-rotate(180deg); }';
+            document.head.appendChild(style);
+        """
+        dark_mode_qscript = QWebEngineScript()
+        dark_mode_qscript.setName('dark_mode')
+        dark_mode_qscript.setInjectionPoint(QWebEngineScript.DocumentReady)
+        dark_mode_qscript.setRunsOnSubFrames(True)
+        dark_mode_qscript.setWorldId(QWebEngineScript.MainWorld)
+        dark_mode_qscript.setSourceCode(dark_mode_script)
+        self.web_view.page().scripts().insert(dark_mode_qscript)
+
         # Layout
         hbox = QHBoxLayout()
         hbox.addWidget(self.back_button)
@@ -43,8 +57,6 @@ class Browser(QWidget):
         layout.addWidget(self.web_view)
         self.setLayout(layout)
 
-
-
     def back(self):
         self.web_view.back()
 
@@ -53,14 +65,8 @@ class Browser(QWidget):
         self.web_view.load(QUrl(url))
         print(url)
 
-
     def update_url_bar(self, q):
         self.url_bar.setText(q.toString())
-        # try:
-        #     script = "document.body.style.backgroundColor = 'black'; document.body.style.color = 'white';"
-        #     self.web_view.page().runJavaScript(script)
-        # except Exception as e:
-        #     print("An error occurred while running the JavaScript code: ", e)
 
     def update_tab_name(self, title):
         parent = self.parentWidget().parentWidget()  # Get the TabbedBrowser
@@ -68,6 +74,8 @@ class Browser(QWidget):
         # Truncate title to 20 characters if it is longer than that
         truncated_title = (title[:17] + '...') if len(title) > 20 else title
         parent.setTabText(index, truncated_title)  # Set tab name to truncated title
+
+
 
 
 class TabbedBrowser(QMainWindow):
