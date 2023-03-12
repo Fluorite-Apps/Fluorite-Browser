@@ -108,7 +108,7 @@ class TabbedBrowser(QMainWindow):
         self.tab_widget.setTabsClosable(True)
         self.tab_widget.tabCloseRequested.connect(self.close_tab)
 
-        # Set fixed tab size
+        # Tab stylesheet
         self.tab_widget.setStyleSheet("""QTabBar::tab { height: 25px; width: 150px; }
         QTabBar::tab:selected { background-color: rgb(70, 74, 95); }
         QTabBar::tab { background-color: #3C4052; }
@@ -120,7 +120,6 @@ class TabbedBrowser(QMainWindow):
         self.tab_widget.setPalette(palette)
 
         self.setCentralWidget(self.tab_widget)
-
 
         # Create first tab
         self.add_tab()
