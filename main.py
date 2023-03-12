@@ -10,16 +10,18 @@ from PyQt5.QtCore import Qt, QPoint, QRect
 global counter_for_tabs
 counter_for_tabs = 1
 
+current_dir = os.getcwd()
+cookie_path = os.path.join(current_dir, "cookies")
+
 class Browser(QWidget):
     def __init__(self):
         super().__init__()
 
         # Webview
         self.profile = QWebEngineProfile.defaultProfile()
-        self.profile.setPersistentCookiesPolicy(QWebEngineProfile.NoPersistentCookies)
         self.web_view = QWebEngineView()
         self.web_view.setPage(QWebEnginePage(self.profile, self.web_view))
-        self.web_view.load(QUrl('https://www.duckduckgo.com/'))
+        self.web_view.load(QUrl('https://www.google.com/'))
         self.web_view.urlChanged.connect(self.update_url_bar)
         self.web_view.titleChanged.connect(self.update_tab_name)
         # Set the background color to RGB(33, 37, 45)
@@ -71,6 +73,8 @@ font: 700 10pt "Montserrat";
     def navigate(self):
         url = self.url_bar.text()
         self.web_view.load(QUrl(url))
+        cookie_store = profile.cookieStore()
+        cookie_store.setCookie(QUrl(url), bytes("cookie_name=cookie_value", encoding="utf-8"))
         print(url)
 
     def update_url_bar(self, q):
@@ -89,6 +93,10 @@ font: 700 10pt "Montserrat";
 class TabbedBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        # Title Bar
+        if sys.platform == 'win32':
+            self.setWindowFlag(Qt.FramelessWindowHint)
 
         # Set background color of main window
         self.setStyleSheet("""background-color: #3C4052;
@@ -135,6 +143,10 @@ font: 700 12pt "Montserrat";
         saved_button = QAction("Saved", self)
         saved_button.triggered.connect(self.show_saved_page)
         self.menuBar().addAction((saved_button))
+
+        exit_button = QAction("Exit", self)
+        exit_button.triggered.connect(exit)
+        self.menuBar().addAction((exit_button))
 
     def show_settings_page(self):
         # Create new tab with the settings page
@@ -185,4 +197,7 @@ if __name__ == '__main__':
     browser = TabbedBrowser()
     browser.showMaximized()
     browser.setWindowTitle("Fluorite Browser")
+    profile = QWebEngineProfile.defaultProfile()
+    profile.setPersistentCookiesPolicy(QWebEngineProfile.ForcePersistentCookies)
+    profile.setPersistentStoragePath(cookie_path)
     sys.exit(app.exec_())
