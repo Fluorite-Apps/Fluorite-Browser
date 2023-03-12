@@ -1,4 +1,4 @@
-# Fluorite-Browser
+# Fluorite Browser
 
 ## Cookies
 
