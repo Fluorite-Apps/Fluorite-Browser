@@ -109,7 +109,10 @@ class TabbedBrowser(QMainWindow):
         self.tab_widget.tabCloseRequested.connect(self.close_tab)
 
         # Set fixed tab size
-        self.tab_widget.setStyleSheet("QTabBar::tab { height: 25px; width: 150px; }")
+        self.tab_widget.setStyleSheet("""QTabBar::tab { height: 25px; width: 150px; }
+        QTabBar::tab:selected { background-color: rgb(70, 74, 95); }
+        QTabBar::tab { background-color: #3C4052; }
+        """)
 
         # Set the background color and shadow
         palette = self.tab_widget.palette()
@@ -130,15 +133,18 @@ class TabbedBrowser(QMainWindow):
 background-color: rgb(33, 37, 45);
 font: 700 12pt "Montserrat";
 """)
+        self.plus_button.setShortcut("Ctrl+T")
 
-        # Create "Settings" and "History" buttons in menu bar
+        # Create "Settings", "History", "Saved" and "Exit" buttons in menu bar
         settings_button = QAction("Settings", self)
         settings_button.triggered.connect(self.show_settings_page)
         self.menuBar().addAction(settings_button)
+        settings_button.setShortcut("Ctrl+,")
 
         history_button = QAction("History", self)
         history_button.triggered.connect(self.show_history_page)
         self.menuBar().addAction(history_button)
+        history_button.setShortcut("Ctrl+H")
 
         saved_button = QAction("Saved", self)
         saved_button.triggered.connect(self.show_saved_page)
