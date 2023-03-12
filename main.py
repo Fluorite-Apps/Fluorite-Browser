@@ -150,7 +150,7 @@ font: 700 12pt "Montserrat";
         self.menuBar().addAction((saved_button))
 
         exit_button = QAction("Exit", self)
-        exit_button.triggered.connect(exit)
+        exit_button.triggered.connect(self.exit_function)
         self.menuBar().addAction((exit_button))
 
     def show_settings_page(self):
@@ -182,6 +182,9 @@ font: 700 12pt "Montserrat";
 
         # Switch to the new tab
         self.tab_widget.setCurrentWidget(browser)
+
+    def exit_function(self):
+        exit()
 
     def add_tab(self):
         # Create new tab
