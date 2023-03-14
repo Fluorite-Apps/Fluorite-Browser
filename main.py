@@ -12,10 +12,17 @@ counter_for_tabs = 1
 
 current_dir = os.getcwd()
 cookie_path = os.path.join(current_dir, "cookies")
+settings_path = os.path.join(current_dir, "settings")
+cookies_settings_path = (settings_path + "\\cookieson.txt")
+
+global use_cookies
+with open(cookies_settings_path, 'r+') as cookies_on:
+    use_cookies = cookies_on.read()
 
 class Browser(QWidget):
     def __init__(self):
         super().__init__()
+        global use_cookies
 
         # Webview
         self.profile = QWebEngineProfile.defaultProfile()
@@ -26,6 +33,10 @@ class Browser(QWidget):
         self.web_view.titleChanged.connect(self.update_tab_name)
         # Set the background color to RGB(33, 37, 45)
         self.web_view.setStyleSheet("background-color: rgb(33, 37, 45);")
+        if str(use_cookies) == str(0):
+            self.profile.setPersistentCookiesPolicy(QWebEngineProfile.NoPersistentCookies)
+        else:
+            pass
 
         # Back button
         self.back_button = QPushButton("<")
@@ -73,8 +84,11 @@ font: 700 10pt "Montserrat";
     def navigate(self):
         url = self.url_bar.text()
         self.web_view.load(QUrl(url))
-        cookie_store = profile.cookieStore()
-        cookie_store.setCookie(QUrl(url), bytes("cookie_name=cookie_value", encoding="utf-8"))
+        if str(use_cookies) == str(0):
+            pass
+        else:
+            cookie_store = profile.cookieStore()
+            cookie_store.setCookie(QUrl(url), bytes("cookie_name=cookie_value", encoding="utf-8"))
         print(url)
 
     def update_url_bar(self, q):
@@ -205,7 +219,10 @@ if __name__ == '__main__':
     browser = TabbedBrowser()
     browser.showMaximized()
     browser.setWindowTitle("Fluorite Browser")
-    profile = QWebEngineProfile.defaultProfile()
-    profile.setPersistentCookiesPolicy(QWebEngineProfile.ForcePersistentCookies)
-    profile.setPersistentStoragePath(cookie_path)
+    if str(use_cookies) == 1:
+        profile = QWebEngineProfile.defaultProfile()
+        profile.setPersistentCookiesPolicy(QWebEngineProfile.ForcePersistentCookies)
+        profile.setPersistentStoragePath(cookie_path)
+    else:
+        pass
     sys.exit(app.exec_())
