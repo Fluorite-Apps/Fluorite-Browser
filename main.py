@@ -6,6 +6,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsDropShadowEffect
 from PyQt5.QtCore import Qt, QPoint, QRect
+import sys
+import threading
+from ui_settings import Ui_MainWindow
+
 
 global counter_for_tabs
 counter_for_tabs = 1
@@ -168,17 +172,11 @@ font: 700 12pt "Montserrat";
         self.menuBar().addAction((exit_button))
 
     def show_settings_page(self):
-        # Create new tab with the settings page
-        browser = Browser()
-        browser.web_view.setHtml("""<h1>Settings page hasn't been implemented yet</h1>
-        <p>This page will allow you to change settings in the future</p>""")
-        self.tab_widget.addTab(browser, "Settings")
-
-        # Switch to the new tab
-        self.tab_widget.setCurrentWidget(browser)
+        settings_window = SettingsWindow()
+        threading.Thread(target=settings_window.show).start()
 
     def show_history_page(self):
-        # Create new tab with the settings page
+        # Create new tab with the history page
         browser = Browser()
         browser.web_view.setHtml("""<h1>History page hasn't been implemented yet</h1>
         <p>This page will allow you to view your history in the future</p>""")
@@ -188,7 +186,7 @@ font: 700 12pt "Montserrat";
         self.tab_widget.setCurrentWidget(browser)
 
     def show_saved_page(self):
-        # Create new tab with the settings page
+        # Create new tab with the saved page
         browser = Browser()
         browser.web_view.setHtml("""<h1>Saved page hasn't been implemented yet</h1>
         <p>This page will allow you to quickly access websites you've saved in the future</p>""")
@@ -209,6 +207,12 @@ font: 700 12pt "Montserrat";
     def close_tab(self, index):
         if self.tab_widget.count() > 1:
             self.tab_widget.removeTab(index)
+
+class SettingsWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
 
 
 if __name__ == '__main__':
