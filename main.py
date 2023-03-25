@@ -172,13 +172,15 @@ font: 700 12pt "Montserrat";
         self.menuBar().addAction((exit_button))
 
     def show_settings_page(self):
+        global settings_window
         settings_window = SettingsWindow()
-        threading.Thread(target=settings_window.show).start()
+        settings_window.show()
+        return settings_window
 
     def show_history_page(self):
         # Create new tab with the history page
         browser = Browser()
-        browser.web_view.setHtml("""<h1>History page hasn't been implemented yet</h1>
+        browser.web_view.setHtml("""<h1>History page hasn't been icfvmplemented yet</h1>
         <p>This page will allow you to view your history in the future</p>""")
         self.tab_widget.addTab(browser, "History")
 
