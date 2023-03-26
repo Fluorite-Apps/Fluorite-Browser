@@ -1,5 +1,6 @@
 import os
 import sys
+from PyQt5 import QtCore
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -7,8 +8,10 @@ from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsDropShadowEffect
 from PyQt5.QtCore import Qt, QPoint, QRect
 import sys
+from PyQt5 import QtWidgets
 import threading
 from ui_settings import Ui_MainWindow
+from py_toggle import *
 
 
 global counter_for_tabs
@@ -210,11 +213,29 @@ font: 700 12pt "Montserrat";
         if self.tab_widget.count() > 1:
             self.tab_widget.removeTab(index)
 
-class SettingsWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
+class SettingsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+    def __init__(self, parent=None, *args, obj=None, **kwargs):
+        super(SettingsWindow, self).__init__(*args, **kwargs, parent=parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowTitle("Settings")
+
+        self.other_toggle = PyToggle(width=50)
+        self.cookies_setting_toggle_layout = QVBoxLayout(self.ui.centralwidget)
+        self.cookies_setting_toggle_layout.addWidget(self.other_toggle)
+        self.other_toggle.setGeometry(360, 180, 151, 71)
+        self.other_toggle.move(360, 180)
+
+
+
+        # self.cookies_toggle = QPushButton('OFF', parent=self)
+        # self.cookies_toggle.setCheckable(True)
+        # self.cookies_toggle.setGeometry(360, 180, 151, 71)
+        # self.cookies_toggle.clicked.connect(self.change_cookies_setting)
+
+
+    def change_cookies_setting(self):
+        print("test")
 
 
 if __name__ == '__main__':
