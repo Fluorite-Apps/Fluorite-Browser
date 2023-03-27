@@ -14,6 +14,10 @@ from ui_settings import Ui_MainWindow
 from py_toggle import *
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
+from BlurWindow.blurWindow import blur
+
+from BlurWindow.blurWindow import GlobalBlur
+
 
 global counter_for_tabs
 counter_for_tabs = 1
@@ -211,18 +215,24 @@ font: 700 12pt "Montserrat";
         if self.tab_widget.count() > 1:
             self.tab_widget.removeTab(index)
 
+
 class SettingsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None , *args, obj=None, **kwargs):
         super(SettingsWindow, self).__init__(*args, **kwargs, parent=parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle("Settings")
+        self.setWindowTitle(" ")
+        GlobalBlur(self.winId(),Dark=True,QWidget=self)
+        self.setStyleSheet("background-color: rgba(0, 0, 0, 0)")
 
         self.other_toggle = PyToggle(
             width=50
         )
 
+        self.apply_button = QPushButton('install', parent=self)
+
         self.ui.cookies_toggle_layout.addWidget(self.other_toggle, Qt.AlignCenter, Qt.AlignCenter)
+        self.ui.apply_button_layout.addWidget(self.apply_button, Qt.AlignCenter, Qt.AlignCenter)
 
 
 if __name__ == '__main__':
