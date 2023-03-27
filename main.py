@@ -34,21 +34,18 @@ with open(cookies_settings_path, 'r+') as cookies_on:
 class Browser(QWidget):
     def __init__(self):
         super().__init__()
-        global use_cookies
 
         # Webview
         self.profile = QWebEngineProfile.defaultProfile()
+        self.profile.setPersistentCookiesPolicy(QWebEngineProfile.NoPersistentCookies)  # Set default policy
         self.web_view = QWebEngineView(self)
         self.web_view.setPage(QWebEnginePage(self.profile, self.web_view))
         self.web_view.load(QUrl('https://www.google.com/'))
         self.web_view.urlChanged.connect(self.update_url_bar)
         self.web_view.titleChanged.connect(self.update_tab_name)
+
         # Set the background color to RGB(33, 37, 45)
         self.web_view.setStyleSheet("background-color: rgb(33, 37, 45);")
-        if str(use_cookies) == str(0):
-            self.profile.setPersistentCookiesPolicy(QWebEngineProfile.NoPersistentCookies)
-        else:
-            pass
 
         # Back button
         self.back_button = QPushButton("<")
@@ -58,12 +55,12 @@ class Browser(QWidget):
 background-color: rgb(33, 37, 45);
 font: 700 10pt "Montserrat";
 """)
-
+        
         # URL bar
         self.url_bar = QLineEdit()
         self.url_bar.returnPressed.connect(self.navigate)
         self.url_bar.setMinimumHeight(25)
-        self.url_bar.setMinimumWidth(1800)  # Set the minimum width
+        self.url_bar.setMinimumWidth(1800)  # Set the minimum width (1800)
         self.url_bar.setStyleSheet("""border: 1px solid rgb(33, 37, 45);""")
 
         # Apply dark mode to every loaded page
@@ -90,18 +87,19 @@ font: 700 10pt "Montserrat";
         layout.addWidget(self.web_view)
         self.setLayout(layout)
 
+        # Check if cookies should be used
+        if str(use_cookies) == str(1):
+            self.profile.setPersistentCookiesPolicy(QWebEngineProfile.AllowPersistentCookies)
+
     def back(self):
         self.web_view.back()
 
     def navigate(self):
         url = self.url_bar.text()
         self.web_view.load(QUrl(url))
-        if str(use_cookies) == str(0):
-            pass
-        else:
+        if str(use_cookies) == str(1):
             cookie_store = self.profile.cookieStore()
             cookie_store.setCookie(QUrl(url), bytes("cookie_name=cookie_value", encoding="utf-8"))
-        print(url)
 
     def update_url_bar(self, q):
         self.url_bar.setText(q.toString())
@@ -222,18 +220,48 @@ class SettingsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle(" ")
-        GlobalBlur(self.winId(),Dark=True,QWidget=self)
+        GlobalBlur(self.winId(), Dark=True, QWidget=self)
         self.setStyleSheet("background-color: rgba(0, 0, 0, 0)")
+        if sys.platform == 'win32':
+            self.setWindowFlag(Qt.FramelessWindowHint)
 
-        self.other_toggle = PyToggle(
+        self.cookies_on_toggle = PyToggle(
             width=50
         )
 
-        self.apply_button = QPushButton('install', parent=self)
+        self.apply_button = QPushButton('Apply', parent=self)
+        self.apply_button.setMinimumHeight(71)
+        self.apply_button.setFixedWidth(281)
+        self.apply_button.setStyleSheet('color: gray')
+        self.apply_button.clicked.connect(self.settings_apply)
 
-        self.ui.cookies_toggle_layout.addWidget(self.other_toggle, Qt.AlignCenter, Qt.AlignCenter)
+        self.back_button = QPushButton('Back', parent=self)
+        self.back_button.setMinimumHeight(71)
+        self.back_button.setFixedWidth(131)
+        self.back_button.setStyleSheet('color: gray')
+        self.back_button.clicked.connect(self.close)
+
+        self.ui.cookies_toggle_layout.addWidget(self.cookies_on_toggle, Qt.AlignCenter, Qt.AlignCenter)
         self.ui.apply_button_layout.addWidget(self.apply_button, Qt.AlignCenter, Qt.AlignCenter)
+        self.ui.settings_back_button_layout.addWidget(self.back_button, Qt.AlignCenter, Qt.AlignCenter)
 
+        if use_cookies == str(0):
+            self.cookies_on_toggle.setCheckState(Qt.Unchecked)
+        else:
+            self.cookies_on_toggle.setCheckState(Qt.Checked)
+
+    def settings_apply(self):
+        global use_cookies
+        with open('settings/cookieson.txt', 'w+') as file:
+            file.truncate(0)
+            if self.cookies_on_toggle.isChecked() == True:
+                file.write("1")
+                use_cookies = str("1")
+            else:
+                file.write("0")
+                use_cookies = str("0")
+
+        self.close()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

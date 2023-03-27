@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'settingsFusXeh.ui'
+## Form generated from reading UI file 'settingsqrFAKl.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.3.1
 ##
@@ -52,7 +52,7 @@ class Ui_MainWindow(object):
         self.main_frame.setLineWidth(0)
         self.button_frame_1 = QFrame(self.main_frame)
         self.button_frame_1.setObjectName(u"button_frame_1")
-        self.button_frame_1.setGeometry(QRect(360, 410, 151, 71))
+        self.button_frame_1.setGeometry(QRect(230, 410, 281, 71))
         self.button_frame_1.setCursor(QCursor(Qt.PointingHandCursor))
         self.button_frame_1.setStyleSheet(u"QPushButton{\n"
 "	padding: 12px;\n"
@@ -106,16 +106,6 @@ class Ui_MainWindow(object):
 "			padding: 12px;\n"
 "			border-radius: 25px;\n"
 "			border-bottom: 30px shadow;\n"
-"        }")
-        self.label_38 = QLabel(self.main_frame)
-        self.label_38.setObjectName(u"label_38")
-        self.label_38.setGeometry(QRect(80, 410, 251, 71))
-        self.label_38.setStyleSheet(u"QLabel {\n"
-"			background-color: #595D75;\n"
-"			padding: 12px;\n"
-"			border-radius: 25px;\n"
-"			border-bottom: 30px shadow;\n"
-"			color: gray;\n"
 "        }")
         self.label_8 = QLabel(self.main_frame)
         self.label_8.setObjectName(u"label_8")
@@ -276,20 +266,57 @@ class Ui_MainWindow(object):
 "        }")
         self.label_43 = QLabel(self.main_frame)
         self.label_43.setObjectName(u"label_43")
-        self.label_43.setGeometry(QRect(360, 410, 151, 71))
+        self.label_43.setGeometry(QRect(230, 410, 281, 71))
         self.label_43.setStyleSheet(u"QLabel {\n"
 "			background-color: rgb(45, 48, 61);\n"
 "			padding: 12px;\n"
 "			border-radius: 25px;\n"
 "			border: 2px solid rgb(73, 88, 97);\n"
 "        }")
+        self.label_44 = QLabel(self.main_frame)
+        self.label_44.setObjectName(u"label_44")
+        self.label_44.setGeometry(QRect(80, 410, 131, 71))
+        self.label_44.setStyleSheet(u"QLabel {\n"
+"			background-color: rgb(45, 48, 61);\n"
+"			padding: 12px;\n"
+"			border-radius: 25px;\n"
+"			border: 2px solid rgb(73, 88, 97);\n"
+"        }")
+        self.button_frame_2 = QFrame(self.main_frame)
+        self.button_frame_2.setObjectName(u"button_frame_2")
+        self.button_frame_2.setGeometry(QRect(80, 410, 131, 71))
+        self.button_frame_2.setCursor(QCursor(Qt.PointingHandCursor))
+        self.button_frame_2.setStyleSheet(u"QPushButton{\n"
+"	padding: 12px;\n"
+"	border-radius: 25px;\n"
+"	border-bottom: 30px shadow;\n"
+"}\n"
+"QPushButton:pressed:hover{\n"
+"	background-color: rgb(46, 49, 63);\n"
+"	padding: 12px;\n"
+"	border-radius: 25px;\n"
+"	border-bottom: 30px shadow;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(60, 64, 82);\n"
+"	padding: 12px;\n"
+"	border-radius: 25px;\n"
+"	border-bottom: 30px shadow;\n"
+"}")
+        self.button_frame_2.setFrameShape(QFrame.NoFrame)
+        self.button_frame_2.setFrameShadow(QFrame.Raised)
+        self.button_frame_2.setLineWidth(0)
+        self.settings_back_button_layout = QHBoxLayout(self.button_frame_2)
+        self.settings_back_button_layout.setSpacing(0)
+        self.settings_back_button_layout.setObjectName(u"settings_back_button_layout")
+        self.settings_back_button_layout.setContentsMargins(0, 0, 0, 0)
         self.label_28.raise_()
         self.label_29.raise_()
         self.label_43.raise_()
         self.label_30.raise_()
         self.button_frame_1.raise_()
         self.label_40.raise_()
-        self.label_38.raise_()
         self.label_8.raise_()
         self.label_41.raise_()
         self.toggle_frame_3.raise_()
@@ -299,6 +326,8 @@ class Ui_MainWindow(object):
         self.label_36.raise_()
         self.label_35.raise_()
         self.label_42.raise_()
+        self.label_44.raise_()
+        self.button_frame_2.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -314,7 +343,6 @@ class Ui_MainWindow(object):
         self.label_28.setText("")
         self.label_29.setText("")
         self.label_40.setText("")
-        self.label_38.setText("")
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.label_41.setText("")
         self.label_37.setText("")
@@ -323,5 +351,6 @@ class Ui_MainWindow(object):
         self.label_42.setText("")
         self.label_30.setText("")
         self.label_43.setText("")
+        self.label_44.setText("")
     # retranslateUi
 
