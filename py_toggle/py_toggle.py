@@ -1,10 +1,10 @@
 # IMPORT QT CORE
 # ///////////////////////////////////////////////////////////////
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-import PyQt5.QtSvg
-# from PyQt5.QtSvgWidgets import *
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+import PySide6.QtSvg
+# from PySide6.QtSvgWidgets import *
 
 # PLAYING SOUNDS
 # ///////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ class PyToggle(QCheckBox):
         self.animation.setDuration(500)
         self.stateChanged.connect(self.setup_animation)
 
-    @pyqtProperty(float)
+    @Property(float)
     def position(self):
         return self._position
 
@@ -84,13 +84,13 @@ class PyToggle(QCheckBox):
 
         if not self.isChecked():
             p.setBrush(QColor(self._bg_color))
-            p.drawRoundedRect(0, 0, rect.width(), 28, 14, 14)
+            p.drawRoundedRect(0,0,rect.width(), 28, 14, 14)
             p.setBrush(QColor(self._circle_color))
-            p.drawEllipse(QRectF(self._position, 3, 22, 22))
+            p.drawEllipse(self._position, 3, 22, 22)
         else:
             p.setBrush(QColor(self._active_color))
-            p.drawRoundedRect(0, 0, rect.width(), 28, 14, 14)
+            p.drawRoundedRect(0,0,rect.width(), 28, 14, 14)
             p.setBrush(QColor(self._circle_color))
-            p.drawEllipse(QRectF(self._position, 3, 22, 22))
+            p.drawEllipse(self._position, 3, 22, 22)
 
         p.end()
