@@ -1,17 +1,18 @@
 import os
 import sys
-from PyQt5 import QtCore
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtWebEngineWidgets import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsDropShadowEffect
-from PyQt5.QtCore import Qt, QPoint, QRect
+from PySide6 import QtCore
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtWebEngineCore import *
+from PySide6.QtWidgets import QApplication, QMainWindow, QGraphicsDropShadowEffect
+from PySide6.QtCore import Qt, QPoint, QRect
 import sys
-from PyQt5 import QtWidgets
+from PySide6 import QtWidgets
 import threading
 from ui_settings import Ui_MainWindow
 from py_toggle import *
+from PySide6.QtWebEngineWidgets import QWebEngineView
 
 
 global counter_for_tabs
@@ -33,7 +34,7 @@ class Browser(QWidget):
 
         # Webview
         self.profile = QWebEngineProfile.defaultProfile()
-        self.web_view = QWebEngineView()
+        self.web_view = QWebEngineView(self)
         self.web_view.setPage(QWebEnginePage(self.profile, self.web_view))
         self.web_view.load(QUrl('https://www.google.com/'))
         self.web_view.urlChanged.connect(self.update_url_bar)
@@ -94,7 +95,7 @@ font: 700 10pt "Montserrat";
         if str(use_cookies) == str(0):
             pass
         else:
-            cookie_store = profile.cookieStore()
+            cookie_store = self.profile.cookieStore()
             cookie_store.setCookie(QUrl(url), bytes("cookie_name=cookie_value", encoding="utf-8"))
         print(url)
 
@@ -107,9 +108,6 @@ font: 700 10pt "Montserrat";
         # Truncate title to 20 characters if it is longer than that
         truncated_title = (title[:17] + '...') if len(title) > 20 else title
         parent.setTabText(index, truncated_title)  # Set tab name to truncated title
-
-
-
 
 class TabbedBrowser(QMainWindow):
     def __init__(self):
@@ -183,7 +181,7 @@ font: 700 12pt "Montserrat";
     def show_history_page(self):
         # Create new tab with the history page
         browser = Browser()
-        browser.web_view.setHtml("""<h1>History page hasn't been icfvmplemented yet</h1>
+        browser.web_view.setHtml("""<h1>History page hasn't been implemented yet</h1>
         <p>This page will allow you to view your history in the future</p>""")
         self.tab_widget.addTab(browser, "History")
 
@@ -201,7 +199,7 @@ font: 700 12pt "Montserrat";
         self.tab_widget.setCurrentWidget(browser)
 
     def exit_function(self):
-        exit()
+        sys.exit()
 
     def add_tab(self):
         # Create new tab
@@ -214,28 +212,17 @@ font: 700 12pt "Montserrat";
             self.tab_widget.removeTab(index)
 
 class SettingsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None, *args, obj=None, **kwargs):
+    def __init__(self, parent=None , *args, obj=None, **kwargs):
         super(SettingsWindow, self).__init__(*args, **kwargs, parent=parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle("Settings")
 
-        self.other_toggle = PyToggle(width=50)
-        self.cookies_setting_toggle_layout = QVBoxLayout(self.ui.centralwidget)
-        self.cookies_setting_toggle_layout.addWidget(self.other_toggle)
-        self.other_toggle.setGeometry(360, 180, 151, 71)
-        self.other_toggle.move(360, 180)
+        self.other_toggle = PyToggle(
+            width=50
+        )
 
-
-
-        # self.cookies_toggle = QPushButton('OFF', parent=self)
-        # self.cookies_toggle.setCheckable(True)
-        # self.cookies_toggle.setGeometry(360, 180, 151, 71)
-        # self.cookies_toggle.clicked.connect(self.change_cookies_setting)
-
-
-    def change_cookies_setting(self):
-        print("test")
+        self.ui.cookies_toggle_layout.addWidget(self.other_toggle, Qt.AlignCenter, Qt.AlignCenter)
 
 
 if __name__ == '__main__':
@@ -246,10 +233,10 @@ if __name__ == '__main__':
     browser = TabbedBrowser()
     browser.showMaximized()
     browser.setWindowTitle("Fluorite Browser")
-    if str(use_cookies) == 1:
+    if str(use_cookies) == '1':
         profile = QWebEngineProfile.defaultProfile()
         profile.setPersistentCookiesPolicy(QWebEngineProfile.ForcePersistentCookies)
         profile.setPersistentStoragePath(cookie_path)
     else:
         pass
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
