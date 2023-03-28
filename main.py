@@ -5,6 +5,7 @@ from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 from PySide6.QtWebEngineCore import *
+from PySide6.QtNetwork import QNetworkCookieJar, QNetworkCookie
 from PySide6.QtWidgets import QApplication, QMainWindow, QGraphicsDropShadowEffect
 from PySide6.QtCore import Qt, QPoint, QRect
 import sys
@@ -13,17 +14,20 @@ import threading
 from ui_settings import Ui_MainWindow
 from py_toggle import *
 from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtCore import QByteArray
 
 from BlurWindow.blurWindow import blur
 
 from BlurWindow.blurWindow import GlobalBlur
 
-
 global counter_for_tabs
 counter_for_tabs = 1
 
 current_dir = os.getcwd()
+global cookie_file
+global cookie_path
 cookie_path = os.path.join(current_dir, "cookies")
+cookie_file = os.path.join(current_dir, "cookies", "cookies.txt")
 settings_path = os.path.join(current_dir, "settings")
 cookies_settings_path = (settings_path + "\\cookieson.txt")
 
@@ -31,13 +35,19 @@ global use_cookies
 with open(cookies_settings_path, 'r+') as cookies_on:
     use_cookies = cookies_on.read()
 
+
 class Browser(QWidget):
     def __init__(self):
         super().__init__()
 
         # Webview
         self.profile = QWebEngineProfile.defaultProfile()
-        self.profile.setPersistentCookiesPolicy(QWebEngineProfile.NoPersistentCookies)  # Set default policy
+        self.cookie_jar = QNetworkCookieJar()
+        if str(use_cookies) == str("1"):
+            with open(cookie_file, "rb") as f:
+                cookies = f.read()
+            self.cookie_jar.setAllCookies(QNetworkCookie.parseCookies(cookies))
+
         self.web_view = QWebEngineView(self)
         self.web_view.setPage(QWebEnginePage(self.profile, self.web_view))
         self.web_view.load(QUrl('https://www.google.com/'))
@@ -55,7 +65,7 @@ class Browser(QWidget):
 background-color: rgb(33, 37, 45);
 font: 700 10pt "Montserrat";
 """)
-        
+
         # URL bar
         self.url_bar = QLineEdit()
         self.url_bar.returnPressed.connect(self.navigate)
@@ -87,9 +97,6 @@ font: 700 10pt "Montserrat";
         layout.addWidget(self.web_view)
         self.setLayout(layout)
 
-        # Check if cookies should be used
-        if str(use_cookies) == str(1):
-            self.profile.setPersistentCookiesPolicy(QWebEngineProfile.AllowPersistentCookies)
 
     def back(self):
         self.web_view.back()
@@ -98,8 +105,11 @@ font: 700 10pt "Montserrat";
         url = self.url_bar.text()
         self.web_view.load(QUrl(url))
         if str(use_cookies) == str(1):
-            cookie_store = self.profile.cookieStore()
-            cookie_store.setCookie(QUrl(url), bytes("cookie_name=cookie_value", encoding="utf-8"))
+            cookies = self.cookie_jar.allCookies()
+            with open(os.path.join(cookie_path, "cookies.txt"), "wb") as f:
+                f.write(QByteArray().join([cookie.toRawForm() for cookie in cookies]))
+        else:
+            print("Not using cookies")
 
     def update_url_bar(self, q):
         self.url_bar.setText(q.toString())
@@ -110,6 +120,7 @@ font: 700 10pt "Montserrat";
         # Truncate title to 20 characters if it is longer than that
         truncated_title = (title[:17] + '...') if len(title) > 20 else title
         parent.setTabText(index, truncated_title)  # Set tab name to truncated title
+
 
 class TabbedBrowser(QMainWindow):
     def __init__(self):
@@ -215,7 +226,7 @@ font: 700 12pt "Montserrat";
 
 
 class SettingsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None , *args, obj=None, **kwargs):
+    def __init__(self, parent=None, *args, obj=None, **kwargs):
         super(SettingsWindow, self).__init__(*args, **kwargs, parent=parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -263,6 +274,7 @@ class SettingsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.close()
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     my_pixmap = QPixmap("browsericon.ico")
@@ -271,10 +283,9 @@ if __name__ == '__main__':
     browser = TabbedBrowser()
     browser.showMaximized()
     browser.setWindowTitle("Fluorite Browser")
-    if str(use_cookies) == '1':
+    if str(use_cookies) == str("1"):
         profile = QWebEngineProfile.defaultProfile()
         profile.setPersistentCookiesPolicy(QWebEngineProfile.ForcePersistentCookies)
         profile.setPersistentStoragePath(cookie_path)
-    else:
-        pass
+        cookie_jar = QNetworkCookieJar()
     sys.exit(app.exec())
