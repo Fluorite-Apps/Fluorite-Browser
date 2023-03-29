@@ -44,9 +44,8 @@ class Browser(QWidget):
         self.profile = QWebEngineProfile.defaultProfile()
         self.cookie_jar = QNetworkCookieJar()
         if str(use_cookies) == str("1"):
-            with open(cookie_file, "rb") as f:
-                cookies = f.read()
-            self.cookie_jar.setAllCookies(QNetworkCookie.parseCookies(cookies))
+            # Using cookies
+            pass
 
         self.web_view = QWebEngineView(self)
         self.web_view.setPage(QWebEnginePage(self.profile, self.web_view))
@@ -105,9 +104,7 @@ font: 700 10pt "Montserrat";
         url = self.url_bar.text()
         self.web_view.load(QUrl(url))
         if str(use_cookies) == str(1):
-            cookies = self.cookie_jar.allCookies()
-            with open(os.path.join(cookie_path, "cookies.txt"), "wb") as f:
-                f.write(QByteArray().join([cookie.toRawForm() for cookie in cookies]))
+            print("Using cookies")
         else:
             print("Not using cookies")
 
@@ -284,8 +281,6 @@ if __name__ == '__main__':
     browser.showMaximized()
     browser.setWindowTitle("Fluorite Browser")
     if str(use_cookies) == str("1"):
-        profile = QWebEngineProfile.defaultProfile()
-        profile.setPersistentCookiesPolicy(QWebEngineProfile.ForcePersistentCookies)
-        profile.setPersistentStoragePath(cookie_path)
-        cookie_jar = QNetworkCookieJar()
+        # Use cookies
+        pass
     sys.exit(app.exec())
